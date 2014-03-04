@@ -1,15 +1,5 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 class User < ActiveRecord::Base
+  has_many :microposts, dependent: :destroy
 	before_save {self.email = email.downcase}
 	before_create :create_remember_token
 
@@ -25,6 +15,11 @@ class User < ActiveRecord::Base
 
   def User.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  def feed
+    ##
+    Micropost.where("user_id = ?", id)
   end
 
   private
